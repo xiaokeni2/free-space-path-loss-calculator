@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Space Path Loss &amp; Link Budget Calculator | RF Tool</title>
+<meta name="description" content="Free online FSPL calculator, link budget calculator for RF engineers. Compute free space path loss in dB and received power for wireless, microwave and satellite links instantly in your browser.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free Space Path Loss & Link Budget Calculator",
+  "url": "https://xiaokeni2.github.io/free-space-path-loss-calculator/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "BRIDZA",
+    "url": "https://rf.bridza.com"
+  }
+}
+</script>
+<style>
+:root{
+  --bg:#0d1117;
+  --panel:#161b22;
+  --panel2:#0d1117;
+  --border:#30363d;
+  --text:#c9d1d9;
+  --muted:#8b949e;
+  --accent:#58a6ff;
+  --good:#3fb950;
+  --bad:#f85149;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.55;
+  min-height:100vh;
+}
+.wrap{max-width:880px;margin:0 auto;padding:24px 16px 48px}
+header{border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:28px}
+h1{font-size:1.55rem;color:var(--accent);font-weight:600;letter-spacing:-.01em}
+.tagline{color:var(--muted);margin-top:6px;font-size:.95rem}
+section{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:20px;
+  margin-bottom:20px;
+}
+h2{font-size:1.08rem;color:var(--text);font-weight:600;margin-bottom:14px}
+h2 .sub{color:var(--muted);font-weight:400;font-size:.85rem;margin-left:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;gap:8px}
+input,select{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--text);
+  padding:9px 10px;
+  font-size:1rem;
+  width:100%;
+  font-variant-numeric:tabular-nums;
+}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+input.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+select{flex:0 0 92px;width:92px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button.preset{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--accent);
+  padding:7px 12px;
+  font-size:.85rem;
+  cursor:pointer;
+}
+button.preset:hover{border-color:var(--accent)}
+.result{
+  margin-top:16px;
+  padding:14px 16px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:var(--panel2);
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.result .lbl{color:var(--muted);font-size:.9rem}
+.num{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums;
+}
+.big{font-size:2rem;color:var(--accent);font-weight:600}
+.big.good{color:var(--good)}
+.big.bad{color:var(--bad)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.note{color:var(--muted);font-size:.83rem;margin-top:12px}
+.formula{
+  margin-top:10px;
+  padding:10px 14px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--accent);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.92rem;
+  overflow-x:auto;
+  white-space:nowrap;
+}
+footer{border-top:1px solid var(--border);margin-top:32px;padding-top:18px;font-size:.88rem;color:var(--muted)}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media (max-width:560px){
+  .grid,.pair{grid-template-columns:1fr}
+  h1{font-size:1.25rem}
+  .big{font-size:1.6rem}
+  section{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>FSPL Calculator &amp; Link Budget Calculator</h1>
+    <p class="tagline">Free space path loss (FSPL) and RF link budget calculator — instant dB results for wireless, microwave and satellite links. Runs entirely in your browser.</p>
+  </header>
+
+  <section>
+    <h2>FSPL Calculator<span class="sub">free space path loss</span></h2>
+    <div class="grid">
+      <div class="field">
+        <label for="freq">Frequency</label>
+        <div class="row">
+          <input class="num" type="number" id="freq" value="2400" min="0" step="any" inputmode="decimal" oninput="calcFSPL()">
+          <select id="freqUnit" onchange="calcFSPL()">
+            <option value="Hz">Hz</option>
+            <option value="kHz">kHz</option>
+            <option value="MHz">MHz</option>
+            <option value="GHz" selected>GHz</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="dist">Distance</label>
+        <div class="row">
+          <input class="num" type="number" id="dist" value="1" min="0" step="any" inputmode="decimal" oninput="calcFSPL()">
+          <select id="distUnit" onchange="calcFSPL()">
+            <option value="m">m</option>
+            <option value="km" selected>km</option>
+            <option value="mile">mile</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="presets">
+      <button class="preset" type="button" onclick="preset(2.4)">2.4 GHz Wi-Fi</button>
+      <button class="preset" type="button" onclick="preset(5.8)">5.8 GHz Wi-Fi</button>
+      <button class="preset" type="button" onclick="preset(12)">12 GHz Satellite Downlink</button>
+    </div>
+    <div class="result">
+      <span class="lbl">Free Space Path Loss</span>
+      <span class="num big" id="fsplOut">—</span>
+    </div>
+    <p class="note">FSPL (dB) = 20·log₁₀(d) + 20·log₁₀(f) + 32.44 &nbsp;·&nbsp; d in km, f in MHz</p>
+  </section>
+
+  <section>
+    <h2>Link Budget<span class="sub">received power &amp; margin</span></h2>
+    <div class="grid">
+      <div class="field">
+        <label for="lbPtx">TX Power (dBm)</label>
+        <input class="num" type="number" id="lbPtx" value="20" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+      <div class="field">
+        <label for="lbGtx">TX Antenna Gain (dBi)</label>
+        <input class="num" type="number" id="lbGtx" value="0" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+      <div class="field">
+        <label for="lbGrx">RX Antenna Gain (dBi)</label>
+        <input class="num" type="number" id="lbGrx" value="0" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+      <div class="field">
+        <label for="lbLoss">Extra Losses L (dB)</label>
+        <input class="num" type="number" id="lbLoss" value="0" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+      <div class="field">
+        <label for="lbFspl">Path Loss FSPL (dB)</label>
+        <input class="num" type="number" id="lbFspl" value="" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+      <div class="field">
+        <label for="lbSens">RX Sensitivity (dBm)</label>
+        <input class="num" type="number" id="lbSens" value="-100" step="any" inputmode="decimal" oninput="calcBudget()">
+      </div>
+    </div>
+    <div class="pair">
+      <div class="result">
+        <span class="lbl">Received Power P<sub>r</sub></span>
+        <span class="num big" id="prOut">—</span>
+      </div>
+      <div class="result">
+        <span class="lbl">Link Margin (P<sub>r</sub> − Sensitivity)</span>
+        <span class="num big" id="marginOut">—</span>
+      </div>
+    </div>
+    <p class="note">P<sub>r</sub> (dBm) = P<sub>tx</sub> + G<sub>tx</sub> + G<sub>rx</sub> − FSPL − L &nbsp;·&nbsp; Positive margin means the link closes.</p>
+  </section>
+
+  <section>
+    <h2>About this tool</h2>
+    <p style="margin-top:4px;font-size:.95rem">This FSPL calculator and link budget calculator gives RF, microwave and satellite engineers an instant first-pass estimate of free space path loss and received signal level. Change any value and results update live — everything is computed locally, no data leaves your browser.</p>
+  </section>
+
+  <footer>
+    <p>More RF tools: <a href="https://rf.bridza.com/">BRIDZA RF Component Selector</a> · <a href="https://xiaokeni2.github.io/rf-component-selector/">OCXO / TCXO Parametric Search</a></p>
+  </footer>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function toMHz(v,u){return {'Hz':v/1e6,'kHz':v/1e3,'MHz':v,'GHz':v*1e3}[u];}
+function toKm(v,u){return {'m':v/1000,'km':v,'mile':v*1.609344}[u];}
+function preset(ghz){
+  $('freq').value=ghz;
+  $('freqUnit').value='GHz';
+  calcFSPL();
+}
+function calcFSPL(){
+  var f=parseFloat($('freq').value), d=parseFloat($('dist').value);
+  if(!(f>0)||!(d>0)){$('fsplOut').textContent='—';return null;}
+  var fm=toMHz(f,$('freqUnit').value), dk=toKm(d,$('distUnit').value);
+  var fspl=20*Math.log10(dk)+20*Math.log10(fm)+32.44;
+  $('fsplOut').textContent=fspl.toFixed(2)+' dB';
+  $('lbFspl').value=fspl.toFixed(2);
+  calcBudget();
+  return fspl;
+}
+function calcBudget(){
+  var ptx=parseFloat($('lbPtx').value), gtx=parseFloat($('lbGtx').value),
+      grx=parseFloat($('lbGrx').value), fspl=parseFloat($('lbFspl').value),
+      loss=parseFloat($('lbLoss').value), sens=parseFloat($('lbSens').value);
+  if([ptx,gtx,grx,fspl,loss,sens].some(isNaN)){$('prOut').textContent='—';$('marginOut').textContent='—';return;}
+  var pr=ptx+gtx+grx-fspl-loss;
+  var margin=pr-sens;
+  $('prOut').textContent=pr.toFixed(2)+' dBm';
+  var m=$('marginOut');
+  m.textContent=margin.toFixed(2)+' dB';
+  m.className='num big '+(margin>=0?'good':'bad');
+}
+calcFSPL();
+</script>
+</body>
+</html>
